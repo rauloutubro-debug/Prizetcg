@@ -1,0 +1,61 @@
+name: Build iOS unsigned IPA
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/ios-unsigned.yml'
+      - 'scripts/build-ios-unsigned.sh'
+      - 'App.tsx'
+      - 'src/**'
+      - 'app.json'
+      - 'package.json'
+      - 'package-lock.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-unsigned-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Check Apple toolchain
+        run: |
+          xcodebuild -version
+          pod --version
+      - name: Install dependencies
+        run: npm ci
+      - name: Verify application
+        run: |
+          npm run typecheck
+          npm test
+      - name: Compile and package unsigned IPA
+        run: npm run build:ios:unsigned
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: PrizeCheckTCG-unsigned
+          path: |
+            output/PrizeCheckTCG-unsigned.ipa
+            output/PrizeCheckTCG-unsigned.ipa.sha256
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build-log
+          path: build/ios-unsigned/xcodebuild.log
+          if-no-files-found: ignore
+          retention-days: 7

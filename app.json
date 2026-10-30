@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "PrizeCheck TCG",
+    "slug": "prizecheck-tcg",
+    "version": "1.0.0",
+    "orientation": "default",
+    "userInterfaceStyle": "dark",
+    "scheme": "prizecheck",
+    "ios": { "supportsTablet": true, "bundleIdentifier": "com.prizecheck.tcg", "buildNumber": "1" },
+    "android": { "package": "com.prizecheck.tcg" },
+    "web": { "bundler": "metro", "name": "PrizeCheck TCG", "themeColor": "#101318" }
+  }
+}
