@@ -41,4 +41,4 @@ O perfil `preview` gera distribuição interna ad hoc, normalmente restrita aos 
 
 ## Estado desta entrega
 
-Ambiente disponível: Linux, sem Xcode e sem credenciais Apple configuradas. Não foi gerado arquivo `.ipa`. A exportação de bundles Android/iOS/web anterior valida o empacotamento JavaScript/Hermes; ela não compila o executável iOS nem realiza assinatura. O build remoto permanece dependente de autenticação Expo e provisionamento Apple.
+O build assinado via EAS não foi executado: depende de autenticação Expo e provisionamento Apple. Para o objetivo de sideload, foi gerado um **IPA sem assinatura** em um runner macOS do GitHub Actions, sem usar as contas Expo ou Apple Developer. Consulte [BUILD-IOS-UNSIGNED.md](BUILD-IOS-UNSIGNED.md) para o arquivo, a execução verificada e os próximos builds.

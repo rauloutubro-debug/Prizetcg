@@ -25,4 +25,10 @@ O segundo comando exige macOS/Xcode/CocoaPods; executá-lo em Linux falha com um
 
 ## Estado real da entrega
 
-O projeto nativo foi gerado com sucesso no ambiente Linux. A sintaxe do script, o YAML e a lógica do app foram verificados localmente. A compilação Xcode remota ainda não foi executada: não foi fornecido um repositório de destino para o workflow. Assim, ainda não existe IPA gerado nem validação de instalação em iPhone. Os perfis EAS assinados do guia anterior são opcionais e não são usados neste fluxo.
+A compilação Xcode e o empacotamento concluíram com sucesso no [build 2 do repositório](https://github.com/rauloutubro-debug/Prizetcg/actions/runs/41144886344), a partir do commit `648ef04a406da95fa5931fc111464543176a7c2f`. O artefato `PrizeCheckTCG-unsigned` contém o IPA e seu checksum. Os artefatos desse workflow ficam disponíveis por sete dias; para gerar novamente, execute o workflow.
+
+Arquivo gerado: `PrizeCheckTCG-unsigned.ipa`, 6.616.728 bytes, versão 1.0.0 (build 1), bundle ID `com.prizecheck.tcg`, iOS mínimo 15.1. A conferência do arquivo baixado confirmou executável Mach-O arm64 para aparelho iOS, bundle embutido, CRC do ZIP válido, ausência de assinatura no executável e ausência de provisionamento e assinatura de recursos no app.
+
+SHA-256: `e7e714def4978e1f78d44c7c80650489bbe80815f127d00a44af133c692fbbd3`.
+
+Ainda não foi validada a assinatura por um sideloader nem a instalação em um iPhone físico. Os perfis EAS assinados do guia anterior são opcionais e não são usados neste fluxo.
