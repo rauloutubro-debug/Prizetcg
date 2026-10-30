@@ -52,7 +52,7 @@ if [[ ! -d "$APP_PATH" ]]; then
 fi
 APP_EXECUTABLE="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$APP_PATH/Info.plist")"
 test -f "$APP_PATH/$APP_EXECUTABLE"
-xcrun lipo -verify_arch arm64 "$APP_PATH/$APP_EXECUTABLE"
+xcrun lipo "$APP_PATH/$APP_EXECUTABLE" -verify_arch arm64
 test -f "$APP_PATH/main.jsbundle"
 if [[ -e "$APP_PATH/embedded.mobileprovision" || -d "$APP_PATH/_CodeSignature" ]]; then
   echo "O build contém provisionamento ou assinatura inesperados; IPA não empacotado." >&2
