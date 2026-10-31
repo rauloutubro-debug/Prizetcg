@@ -1,39 +1,33 @@
-# Verificação realizada
+# Verificação do PTCGMAP 2.0
 
-Data: 30/10/2026. Ambiente: Linux, Node.js 24.19.0, Expo SDK 54.
+Data: 31/10/2026. Código analisado e atualizado em Linux, Node.js 24.19.0, Expo SDK 54. A compilação iOS em nuvem usa o workflow macOS do repositório. A interface usa um único modal nativo com uma pilha lógica de painéis, evitando múltiplas apresentações simultâneas em UIKit.
 
-- `npm run typecheck`: passou, sem erros TypeScript.
-- `npm test`: 12 testes passaram, nenhuma falha.
-- `CI=1 EXPO_OFFLINE=1 npm run build:web`: exportação concluída.
-- `CI=1 EXPO_OFFLINE=1 npx expo export --platform all --output-dir dist-native`: bundles web, Android e iOS gerados com sucesso; bundles nativos compilados para Hermes.
-- `CI=1 EXPO_OFFLINE=1 npx expo install --check`: dependências compatíveis segundo os metadados locais do SDK. O próprio Expo informa que a checagem em modo offline não consulta metadados atualizados.
+## Domínio e persistência
 
-Os testes verificam importação TCG Live/Limitless, agrupamento por impressão, rejeição de linhas inválidas e total incorreto, intervalos de Prêmios, conferência de 54 cartas, seis identificações diretas, bloqueio de contagens inconsistentes, mapa finalizado, retirada de Prêmios, reinício de turno, recursos de partida e condições especiais. Um cenário enumera todos os arranjos possíveis e compara seus limites com os intervalos calculados.
+`npm test`: **27 testes passaram** — 13 de parser/Prêmios/utilitários, 9 de mesa e 5 de migração/persistência/catálogo.
 
-Não foram executados emulador, navegador automatizado, build Gradle, teste de acessibilidade com leitor de tela ou validação em aparelho físico. O build Xcode remoto foi executado posteriormente, conforme a seção final. Os binários para as lojas, assinatura e publicação não fazem parte desta entrega.
+Cobertura relevante: listas TCG Live/Limitless e galerias, impressões distintas, contagem de 60 cartas, regras de exclusão dos seis Prêmios, conservação de 60/120 cópias, compra, permutações de embaralhamento, pilhas de evolução/anexos, capacidade das zonas, ampliação manual do Banco, privacidade visual, transição de turno, desfazer exato, migração sem sobrescrever a chave antiga, fila serial, sessão e histórico após serialização, recusa de dados inválidos e correspondência única no catálogo. Um teste executa **1.000 ações variadas**, verifica invariantes a cada ação e compara o snapshot restaurado por desfazer.
 
-O ZIP contém o código-fonte, o lockfile e os testes; não inclui `node_modules`, caches nem os bundles gerados. Rode `npm ci` para instalar as versões do lockfile.
+`npm run typecheck`: passou. A sintaxe Bash do script de IPA foi conferida com `bash -n`. O projeto nativo PTCGMAP e seu scheme foram gerados com Expo prebuild em Linux.
 
-## Preparação para IPA
+## Interface e cache no navegador
 
-Adicionados `eas.json`, número de build iOS `1`, scripts de build e `BUILD-IOS.md`. Configuração Expo resolvida com sucesso e perfis EAS conferidos. A verificação `eas whoami` retornou `Not logged in`; não há token Expo nem credenciais Apple configuradas no ambiente. O ambiente é Linux e não possui `xcodebuild`. Nenhum build remoto foi iniciado e nenhum IPA foi gerado.
+Testes executados com Playwright + Chromium real, sem respostas de catálogo simuladas. Relatórios: [qa/browser-report.json](qa/browser-report.json), [qa/interaction-report.json](qa/interaction-report.json) e [qa/startup-report.json](qa/startup-report.json). Roteiros e relatórios adicionais: `qa/startup_check.py`, `qa/layout_check.py` e `qa/error_check.py`. Execute primeiro `browser_check.py`, depois `interaction_check.py`; os demais verificam cenários complementares.
 
-## IPA sem assinatura para sideload
+Foram exercitados importação e edição de deck, manutenção da sessão ao editar a biblioteca, compra, desfazer, busca, movimentação para Banco/Ativo, anexação de Energia, evolução, dano/condições/Habilidade, revelação e retirada de Prêmios, devolução por desfazer, treino solo e controle dos dois lados. A passagem de jogador removeu a mesa da árvore e a mão adversária permaneceu oculta; estudo revelou os dois lados explicitamente.
 
-Adicionados o workflow `.github/workflows/ios-unsigned.yml`, o script `scripts/build-ios-unsigned.sh` e o guia `BUILD-IOS-UNSIGNED.md`. O projeto iOS `PrizeCheckTCG.xcodeproj` e seu scheme foram gerados por `expo prebuild --platform ios --no-install` com sucesso. A sintaxe Bash e o YAML passaram na verificação local. Os 12 testes do domínio e o TypeScript passaram novamente.
+A rodada final de preparação baixou **21 imagens reais de 24 tipos** do exemplo para IndexedDB; rodadas anteriores obtiveram 22. A última rodada registrou também uma falha de rede em Rare Candy, sem apagar os arquivos já baixados. A fonte não ofereceu imagem para as duas Energias SVE; o fallback legível e a importação de imagem permanecem disponíveis. O seletor de arquivos importou uma imagem real local com a rede externa bloqueada.
 
-Este fluxo usa Xcode no runner macOS, desativa assinatura, compila Release para aparelho arm64, confere executável e JS bundle e empacota `Payload/PrizeCheckTCG.app` em um IPA. Não precisa de conta Expo nem credenciais Apple para compilar. O sideloader é responsável pela assinatura posterior.
+O teste bloqueou todas as requisições HTTPS externas e confirmou renderização a partir de URLs Blob, sem download remoto. A sessão foi comparada após recarregar e também após fechar/reabrir o contexto persistente do navegador. As imagens locais foram retomadas com a rede externa ainda bloqueada. O código web continuou servido por localhost: isso testa dados e cache offline, não primeira carga de uma PWA totalmente desconectada.
 
-### Resultado da compilação remota
+Verificados viewports de **390×844**, **1024×768** e **1366×1024**, sem overflow horizontal do documento. Em paisagem de iPad, os campos ficam lado a lado; no iPhone a barra de ações rola horizontalmente. As verificações de interação e retomada passaram, incluindo migração real dos dados antigos, preservação de marcadores/VSTAR e recusa de sobrescrever um registro ilegível. Os estados ARIA de seleção e marcação foram corrigidos e conferidos. Não houve exceção JavaScript não tratada nesses fluxos. A rodada adicional também conferiu 320×568 e 810×1080. Somando os cinco relatórios de navegador, passaram 53 verificações, incluindo o erro de capacidade exibido no diálogo ativo sem movimentar a carta. Capturas de tela, imagens de teste e o perfil de navegador ficam fora do Git.
 
-- [GitHub Actions: execução 41144886344](https://github.com/rauloutubro-debug/Prizetcg/actions/runs/41144886344): **success**.
-- Commit compilado: `648ef04a406da95fa5931fc111464543176a7c2f`.
-- Os 12 testes e o TypeScript passaram no runner macOS.
-- Arquivo: `PrizeCheckTCG-unsigned.ipa`, 6.616.728 bytes.
-- Versão: 1.0.0 (1); bundle ID: `com.prizecheck.tcg`; iOS mínimo: 15.1.
-- Download verificado: checksum do artefato GitHub, checksum do IPA e CRC das entradas do ZIP coincidem.
-- Executável: Mach-O 64-bit arm64, plataforma iOS para aparelho, sem assinatura embutida.
-- App sem `_CodeSignature` e sem `embedded.mobileprovision`; bundle JavaScript/Hermes embutido com 4.399.044 bytes.
-- SHA-256 do IPA: `e7e714def4978e1f78d44c7c80650489bbe80815f127d00a44af133c692fbbd3`.
+## Compilação
 
-Assinatura por sideloader e execução em aparelho físico permanecem sem validação nesta entrega.
+A exportação de bundles Android, iOS/Hermes e web foi executada com sucesso. Isso não equivale a instalação em hardware. O resultado do build Xcode/IPA desta versão será registrado abaixo quando a execução remota terminar.
+
+## Limites da verificação
+
+Não houve teste em iPhone/iPad físico, leitor de tela VoiceOver, assinatura por sideloader, teste de atualização sobre uma instalação real nem execução em modo avião em hardware. O cache nativo Documents e o picker nativo fazem parte do código, mas seus testes de execução aqui foram feitos pelo adaptador web; a compilação nativa é verificada separadamente.
+
+A mesa não valida todas as regras, não automatiza ataques/efeitos/vitória e não possui adversário automático. Os dados de JSON exportados não incluem os arquivos de imagem, e não há restauração de backup pela interface nesta versão. Os artefatos antigos de PrizeCheck 1.0 continuam no histórico e não são o binário desta atualização.

@@ -1,34 +1,32 @@
-# IPA sem assinatura para sideload
+# Compilar PTCGMAP para iPhone/iPad sem Mac local
 
-Este é o fluxo para gerar um executável iOS de aparelho e empacotá-lo em `Payload/PrizeCheckTCG.app` dentro de `PrizeCheckTCG-unsigned.ipa`, sem certificado ou provisionamento Apple. Não é necessário um Mac local: o GitHub Actions fornece macOS e Xcode.
+O workflow `.github/workflows/ios-unsigned.yml` usa um runner `macos-15` do GitHub Actions e gera **PTCGMAP-unsigned.ipa** para sideload. Ele compila o executável iOS; não renomeia um ZIP de JavaScript nem tenta recompilar o IPA anterior.
 
-Não requer login Expo, conta Apple Developer paga ou credenciais Apple para compilar. É necessário um repositório GitHub com Actions habilitado e disponibilidade de minutos para runners macOS conforme o plano da conta.
+## Na nuvem
 
-## Gerar pelo navegador
+1. Abra **Actions → Build iOS unsigned IPA** no repositório.
+2. Execute **Run workflow** na branch desejada. Um push de código também dispara o workflow.
+3. Aguarde testes, TypeScript, Expo prebuild, instalação dos Pods e `xcodebuild archive` em Release.
+4. Baixe o artefato **PTCGMAP-unsigned** e extraia `PTCGMAP-unsigned.ipa` e o checksum SHA-256.
+5. Use seu sideloader para assinar e instalar o IPA no iPhone/iPad.
 
-1. Coloque o conteúdo desta pasta na raiz de um repositório GitHub seu, incluindo `.github/workflows/ios-unsigned.yml`, `scripts/`, código-fonte e `package-lock.json`. Os arquivos ocultos precisam ser incluídos. Não envie `node_modules`, `build`, `output` ou os bundles exportados.
-2. O push dos arquivos dispara o workflow **Build iOS unsigned IPA**. Também é possível executar em **Actions → Build iOS unsigned IPA → Run workflow**, quando o workflow estiver na branch padrão.
-3. Aguarde a conclusão. Se falhar, consulte o passo e o artefato `ios-build-log` quando disponível.
-4. Abra a execução concluída e baixe o artefato **PrizeCheckTCG-unsigned**. Extraia o ZIP do artefato: dentro estará `PrizeCheckTCG-unsigned.ipa` e seu checksum SHA-256.
-5. Importe esse `.ipa` no sideloader escolhido para realizar a assinatura e instalação. Os requisitos de Apple ID, certificado, renovação e dispositivo dependem do sideloader. O arquivo não assinado não é instalável diretamente pelo iOS.
+Esse build não usa conta Expo, certificado Apple ou provisionamento. O sideloader fará a assinatura depois e terá seus próprios requisitos. Um IPA sem assinatura não é instalável diretamente pelo iOS. Nenhum envio à App Store faz parte do workflow.
 
-O workflow não publica o app na App Store e não contém etapas de assinatura. O app é compilado em Release para `iphoneos`, com arquitetura arm64 e bundle JavaScript/Hermes embutido, sem depender de Metro ou Expo Go. O script valida a presença do executável arm64 e de `main.jsbundle` antes de empacotar.
+O projeto nativo e o scheme são detectados após o prebuild. O identificador `com.prizecheck.tcg` foi mantido; o nome exibido passou a PTCGMAP. Para reter os dados existentes, use a mesma identidade de assinatura do sideloader e instale como atualização, sem desinstalar o app anterior. A manutenção dos dados durante a instalação pelo sideloader precisa ser verificada no aparelho.
 
-## Script usado na nuvem
+## Em um Mac com Xcode
 
 ```bash
 npm ci
 npm run build:ios:unsigned
 ```
 
-O segundo comando exige macOS/Xcode/CocoaPods; executá-lo em Linux falha com uma mensagem explícita. Dentro do GitHub Actions, essas ferramentas são fornecidas pelo runner `macos-15`. O script gera o projeto nativo via Expo prebuild, instala os Pods e executa `xcodebuild archive` com assinatura desativada. Em seguida, empacota o `.app` compilado em um IPA.
+É necessário Xcode, SDK iphoneos, CocoaPods e Node.js. O script recusa execução direta em Linux; no GitHub Actions o Mac é fornecido pelo runner.
 
-## Estado real da entrega
+A compilação desativa assinatura, usa destino de aparelho iOS e confere executável arm64 e `main.jsbundle` antes de criar `Payload/<app>.app` dentro do IPA. O bundle é embutido: o app nativo instalado não depende de Metro para funcionar.
 
-A compilação Xcode e o empacotamento concluíram com sucesso no [build 2 do repositório](https://github.com/rauloutubro-debug/Prizetcg/actions/runs/41144886344), a partir do commit `648ef04a406da95fa5931fc111464543176a7c2f`. O artefato `PrizeCheckTCG-unsigned` contém o IPA e seu checksum. Os artefatos desse workflow ficam disponíveis por sete dias; para gerar novamente, execute o workflow.
+Para um cliente local de desenvolvimento no simulador, use `npm run ios:native` em macOS com Xcode. Para distribuição assinada por EAS, os perfis anteriores permanecem em `eas.json`; consulte BUILD-IOS.md e configure as contas necessárias somente se escolher esse caminho.
 
-Arquivo gerado: `PrizeCheckTCG-unsigned.ipa`, 6.616.728 bytes, versão 1.0.0 (build 1), bundle ID `com.prizecheck.tcg`, iOS mínimo 15.1. A conferência do arquivo baixado confirmou executável Mach-O arm64 para aparelho iOS, bundle embutido, CRC do ZIP válido, ausência de assinatura no executável e ausência de provisionamento e assinatura de recursos no app.
+## Verificação do aparelho
 
-SHA-256: `e7e714def4978e1f78d44c7c80650489bbe80815f127d00a44af133c692fbbd3`.
-
-Ainda não foi validada a assinatura por um sideloader nem a instalação em um iPhone físico. Os perfis EAS assinados do guia anterior são opcionais e não são usados neste fluxo.
+A compilação não substitui o teste em hardware. Verifique a atualização sobre a instalação anterior, a importação de imagens pelo Files, a retomada depois de encerrar o app e o treino em modo avião. Os resultados já executados estão em VALIDATION.md.

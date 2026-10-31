@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 export const colors = {
-  bg: '#101318', panel: '#191D24', raised: '#222730', border: '#2E343F', text: '#F1F2F5', muted: '#9AA4B4',
-  orange: '#FFA45A', orangeBg: '#33271F', green: '#9AE5C3', greenBg: '#1D332C', purple: '#BAA4F4', red: '#FF9EAC',
+  bg: '#0D151C', panel: '#15222C', raised: '#1E303C', border: '#2B414D', text: '#EDF4F5', muted: '#A0B5BF',
+  orange: '#E7BC65', orangeBg: '#342E22', green: '#6BDAC3', greenBg: '#173C37', purple: '#BAA4F4', red: '#FFABB5',
 };
 export const common = StyleSheet.create({
   panel: { backgroundColor: colors.panel, borderColor: colors.border, borderWidth: 1, borderRadius: 18, padding: 20 },

@@ -23,7 +23,7 @@ export function parseDeck(raw: string, name: string): { deck?: Deck; errors: str
     if (!match) { errors.push(`Linha ${index + 1}: formato não reconhecido: ${line}`); return; }
     const quantity = Number(match[1]);
     const rest = match[2]!;
-    const metadata = /^(.+?)\s+([A-Za-z][A-Za-z0-9-]{1,11})\s+(\d+[a-z]?(?:\/\d+)?)$/i.exec(rest);
+    const metadata = /^(.+?)\s+([A-Za-z][A-Za-z0-9-]{1,11})\s+([A-Za-z]{0,4}\d+[a-z]?(?:\/\d+)?)$/i.exec(rest);
     const cardName = metadata ? metadata[1]! : rest;
     const cardCategory = category ?? (/energy|energia/i.test(cardName) ? 'energy' : undefined);
     if (!cardCategory) { errors.push(`Linha ${index + 1}: adicione o cabeçalho Pokémon, Treinador ou Energia antes das cartas.`); return; }

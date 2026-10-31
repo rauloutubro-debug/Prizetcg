@@ -1,0 +1,9 @@
+{
+  "checks": [
+    "Configurações em 320×568 sem overflow horizontal",
+    "Meus Decks em 320×568 sem overflow horizontal",
+    "Treinar em 320×568 sem overflow horizontal",
+    "Mesa em iPad 810×1080 sem overflow horizontal"
+  ],
+  "errors": []
+}

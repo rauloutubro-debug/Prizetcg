@@ -1,6 +1,6 @@
 {
   "name": "prizecheck-tcg",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "main": "expo/AppEntry",
   "scripts": {
@@ -11,7 +11,7 @@
     "ios:native": "expo run:ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx tests/domain.test.ts",
+    "test": "node --import tsx tests/domain.test.ts && node --import tsx tests/battle.test.ts && node --import tsx tests/workspace.test.ts",
     "build:web": "expo export --platform web",
     "build:ios": "npx eas-cli build --platform ios --profile production",
     "build:ios:preview": "npx eas-cli build --platform ios --profile preview",
@@ -28,7 +28,9 @@
     "react-native-safe-area-context": "~5.6.0",
     "@react-native-async-storage/async-storage": "2.2.0",
     "lucide-react-native": "1.65.0",
-    "react-native-svg": "15.12.1"
+    "react-native-svg": "15.12.1",
+    "expo-file-system": "~19.0.24",
+    "expo-document-picker": "~14.0.8"
   },
   "devDependencies": {
     "typescript": "~5.9.2",

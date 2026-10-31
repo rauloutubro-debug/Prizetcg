@@ -1,13 +1,24 @@
 {
   "expo": {
-    "name": "PrizeCheck TCG",
+    "name": "PTCGMAP",
     "slug": "prizecheck-tcg",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "default",
     "userInterfaceStyle": "dark",
     "scheme": "prizecheck",
-    "ios": { "supportsTablet": true, "bundleIdentifier": "com.prizecheck.tcg", "buildNumber": "1" },
-    "android": { "package": "com.prizecheck.tcg" },
-    "web": { "bundler": "metro", "name": "PrizeCheck TCG", "themeColor": "#101318" }
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.prizecheck.tcg",
+      "buildNumber": "2"
+    },
+    "android": {
+      "package": "com.prizecheck.tcg"
+    },
+    "web": {
+      "bundler": "metro",
+      "name": "PTCGMAP",
+      "themeColor": "#101318"
+    },
+    "icon": "./assets/icon.png"
   }
 }

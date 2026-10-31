@@ -1,0 +1,8 @@
+{
+  "checks": [
+    "Erro de capacidade é exibido dentro do diálogo ativo com instrução",
+    "Ação recusada mantém carta e Ativo nas posições anteriores",
+    "Usuário consegue resolver o erro e mover para o Banco"
+  ],
+  "errors": []
+}

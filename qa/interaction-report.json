@@ -1,0 +1,20 @@
+{
+  "checks": [
+    "Edição de deck salva pela interface",
+    "Editar deck não altera a cópia da partida em andamento",
+    "Nome editado persiste após recarregar",
+    "Energia anexada no Pokémon pelo fluxo da mesa",
+    "Dano, condição e Habilidade marcados na carta",
+    "Evolução empilha carta anterior, mantém dano e remove condições",
+    "Desfazer evolução restaura pilha e marcadores",
+    "Embaralhar pela interface preserva todas as cópias",
+    "Prêmio desconhecido não expõe identidade no painel de ação",
+    "Virar um Prêmio revela a carta explicitamente",
+    "Retirada manual de um Prêmio para a mão",
+    "Desfazer devolve Prêmio à posição anterior",
+    "Treino solo funcional com uma lista de 60 cópias",
+    "Ajuste manual do limite de Banco pela interface",
+    "Sem exceções JavaScript nos fluxos avançados"
+  ],
+  "errors": []
+}

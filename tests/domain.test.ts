@@ -118,3 +118,9 @@ test('intervalos cobrem todos os arranjos possíveis em uma lista pequena de tip
     assert.equal(row.max, Math.max(...possible.map(p => p[i]!)));
   });
 });
+
+test('importador preserva números de galerias como TG01 e suas coleções', () => {
+  const result = parseDeck('Pokémon: 4\n4 Eevee BRS TG11\nTrainer: 48\n48 Test Trainer\nEnergy: 8\n8 Test Energy', 'Galeria');
+  assert.equal(result.deck?.cards[0]?.set, 'BRS');
+  assert.equal(result.deck?.cards[0]?.number, 'TG11');
+});

@@ -19,19 +19,20 @@ export NODE_BINARY="$(command -v node)"
 
 BUILD_ROOT="$PROJECT_ROOT/build/ios-unsigned"
 OUTPUT_ROOT="$PROJECT_ROOT/output"
-ARCHIVE_PATH="$BUILD_ROOT/PrizeCheckTCG.xcarchive"
+ARCHIVE_PATH="$BUILD_ROOT/PTCGMAP.xcarchive"
 PACKAGE_ROOT="$BUILD_ROOT/package"
 mkdir -p "$BUILD_ROOT" "$OUTPUT_ROOT"
 
 # Generates the native iPhone project; npm ci must have run first.
 npx --no-install expo prebuild --platform ios --no-install
+NATIVE_PROJECT="$(node -e 'const fs = require("fs"); const p = fs.readdirSync("ios").filter(x => x.endsWith(".xcodeproj")); if (p.length !== 1) throw Error("Expected one Xcode project"); process.stdout.write(p[0].replace(/\.xcodeproj$/, ""))')"
 pod install --project-directory=ios
 
 # 'generic/platform=iOS' + iphoneos builds for devices, not the simulator.
 # The Release configuration embeds the JS/Hermes bundle, without a Metro server.
 xcodebuild \
-  -workspace "$PROJECT_ROOT/ios/PrizeCheckTCG.xcworkspace" \
-  -scheme PrizeCheckTCG \
+  -workspace "$PROJECT_ROOT/ios/$NATIVE_PROJECT.xcworkspace" \
+  -scheme "$NATIVE_PROJECT" \
   -configuration Release \
   -sdk iphoneos \
   -destination 'generic/platform=iOS' \
@@ -45,9 +46,9 @@ xcodebuild \
   PROVISIONING_PROFILE_SPECIFIER="" \
   2>&1 | tee "$BUILD_ROOT/xcodebuild.log"
 
-APP_PATH="$ARCHIVE_PATH/Products/Applications/PrizeCheckTCG.app"
+APP_PATH="$ARCHIVE_PATH/Products/Applications/$NATIVE_PROJECT.app"
 if [[ ! -d "$APP_PATH" ]]; then
-  echo "Build não produziu PrizeCheckTCG.app. Consulte xcodebuild.log." >&2
+  echo "Build não produziu PTCGMAP.app. Consulte xcodebuild.log." >&2
   exit 1
 fi
 APP_EXECUTABLE="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$APP_PATH/Info.plist")"
@@ -64,8 +65,8 @@ if [[ -d "$PACKAGE_ROOT" ]]; then
   rm -rf "$PACKAGE_ROOT"
 fi
 mkdir -p "$PACKAGE_ROOT/Payload"
-ditto "$APP_PATH" "$PACKAGE_ROOT/Payload/PrizeCheckTCG.app"
-IPA_PATH="$OUTPUT_ROOT/PrizeCheckTCG-unsigned.ipa"
+ditto "$APP_PATH" "$PACKAGE_ROOT/Payload/$NATIVE_PROJECT.app"
+IPA_PATH="$OUTPUT_ROOT/PTCGMAP-unsigned.ipa"
 if [[ -f "$IPA_PATH" ]]; then
   rm "$IPA_PATH"
 fi
@@ -75,6 +76,6 @@ fi
 )
 (
   cd "$OUTPUT_ROOT"
-  shasum -a 256 PrizeCheckTCG-unsigned.ipa > PrizeCheckTCG-unsigned.ipa.sha256
+  shasum -a 256 PTCGMAP-unsigned.ipa > PTCGMAP-unsigned.ipa.sha256
 )
 echo "IPA sem assinatura gerado: $IPA_PATH"

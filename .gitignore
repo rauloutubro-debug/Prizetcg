@@ -8,3 +8,8 @@ build/
 output/
 *.zip
 .DS_Store
+
+/qa/*.png
+/qa/*state*.json
+/qa/browser-profile/
+/qa/*.webp

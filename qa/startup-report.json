@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "Migração real na inicialização copia a lista do armazenamento v1",
+    "Marcadores antigos preservados após inicializar v2",
+    "Rastreador abre com a conferência anterior",
+    "Ferramenta anterior mantém o dano registrado",
+    "Recurso VSTAR anterior permanece utilizado",
+    "Retomada não duplica o deck migrado",
+    "Dados ilegíveis entram em modo temporário com aviso claro",
+    "Inicialização com erro não sobrescreve o registro existente",
+    "Sem exceções JavaScript nos cenários de migração e recuperação"
+  ],
+  "errors": []
+}

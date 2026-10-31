@@ -1,0 +1,28 @@
+{
+  "errors": [],
+  "checks": [
+    "Importar deck na interface",
+    "Download real de imagens para armazenamento local",
+    "Mão adversária oculta na mesa dupla",
+    "Compra real altera a mão",
+    "Desfazer restaura a mão",
+    "Busca por carta na própria lista",
+    "Movimentação do baralho para o Banco",
+    "Proteção de tela na troca de controle",
+    "Mesa removida da árvore durante a passagem",
+    "Após passagem, mão do outro jogador fica oculta",
+    "Revelação explícita dos dois lados",
+    "Sem overflow horizontal no iPad 1366×1024",
+    "Retomada idêntica após recarregar o aplicativo",
+    "Imagens reais renderizadas offline a partir do IndexedDB",
+    "Importação de imagem local pelo seletor de arquivos, offline",
+    "Sem overflow horizontal no iPhone 390×844",
+    "Mesa utilizável sem overflow horizontal no iPhone",
+    "Nenhum erro JavaScript não tratado",
+    "Sem overflow horizontal no iPad 1024×768",
+    "Sessão preservada após encerrar e reabrir o navegador",
+    "Imagens do IndexedDB retomadas após reabrir, com rede externa bloqueada",
+    "Sem erros ao retomar em novo processo do navegador"
+  ],
+  "downloaded_images": 21
+}

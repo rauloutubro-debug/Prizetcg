@@ -1,130 +1,92 @@
-# PrizeCheck TCG
+# PTCGMAP 2.0
 
-Aplicativo mobile em **React Native + Expo + TypeScript**, com modo escuro padrão, sessão offline e versão web para desenvolvimento. Interface em português; nomes das cartas são preservados no idioma importado.
+Aplicativo React Native + Expo + TypeScript para treino local de Pokémon TCG. Oferece biblioteca de decks, imagens reais preparadas para uso offline, mesa manual solo ou para dois lados e as ferramentas de torneio do PrizeCheck original.
 
-Para **IPA sem assinatura destinado a sideload**, consulte [BUILD-IOS-UNSIGNED.md](BUILD-IOS-UNSIGNED.md). O workflow GitHub Actions compila na nuvem sem exigir um Mac local, login Expo ou assinatura Apple. Para distribuição assinada por EAS Build, consulte [BUILD-IOS.md](BUILD-IOS.md).
+## Começar
 
-## Executar
-
-Requisitos: Node.js 22 LTS ou superior, npm e Expo Go compatível com o SDK 54. Se a versão atual do Expo Go não suportar esse SDK, use uma development build compatível ou atualize o SDK seguindo a documentação do Expo.
+Node.js 22 LTS, npm e um cliente de desenvolvimento compatível com Expo SDK 54.
 
 ```bash
-npm install
+npm ci
 npm start
 ```
 
-Abra no Android/iOS com um cliente Expo compatível. Para web:
+Para testar a interface no navegador:
 
 ```bash
 npm run web
 ```
 
-Com Android SDK/emulador configurado, use `npm run android`. Para o simulador iOS, use `npm run ios` em macOS com Xcode. Os comandos iniciam o ambiente de desenvolvimento; não geram um APK/IPA de produção.
+Para compilar o cliente localmente: `npm run ios:native` exige macOS/Xcode/CocoaPods; `npm run android:native` exige Android SDK/JDK. Se o Expo Go atual não suportar SDK 54, use uma development build compatível. A compilação em nuvem para sideload está documentada em [BUILD-IOS-UNSIGNED.md](BUILD-IOS-UNSIGNED.md) e não requer um Mac local.
 
-Para compilar e instalar um cliente nativo local sem depender do Expo Go, use `npm run android:native` com Android SDK/JDK configurados, ou `npm run ios:native` em macOS com Xcode e CocoaPods. Esses comandos geram os projetos nativos a partir da configuração Expo e compilam uma versão de desenvolvimento.
+## Usar o app
+
+1. Em **Meus Decks**, importe uma lista TCG Live ou Limitless com cabeçalhos Pokémon, Trainer/Treinador e Energy/Energia. O exemplo completo pode ser preenchido pelo botão correspondente. A lista deve ter 60 cartas; o app não verifica rotação, legalidade ou limite de cópias por nome.
+2. Toque em **Preparar offline**. A operação consulta a API pública TCGdex, identifica a impressão por coleção e número e baixa as imagens disponíveis. É possível interromper após a carta atual e continuar depois.
+3. Em **Ver cartas → Ampliar**, importe um arquivo de imagem para uma carta ausente. O ID TCGdex opcional permite uma associação manual. Confira a edição nesse caso. O catálogo está em inglês; as imagens podem ser substituídas por arquivos que você pode utilizar.
+4. Em **Treinar**, escolha treino solo ou dois lados, selecione os decks e prepare a mesa. A preparação embaralha, compra 7 e separa 6 Prêmios. Você escolhe o Ativo e o Banco; não há seleção automática de Básicos ou mulligan.
+5. Toque em uma carta para mover, virar, revelar, ampliar, anexar Energia/Ferramenta, empilhar evolução ou alterar marcadores. Cartas fora da mão podem ser localizadas pelos botões de zona. **Buscar no baralho** é uma busca manual com acesso à ordem atual; embaralhe explicitamente depois de resolvê-la.
+6. **Desfazer** restaura o estado anterior, incluindo ordem de baralho, pilhas e marcadores. O histórico mantém as últimas 60 ações. Há anotações manuais de efeitos e moeda registrada no histórico.
+7. **Repetir mão inicial** prepara outra sessão com as cópias dos mesmos decks. Editar ou excluir uma lista da biblioteca não altera a partida em andamento.
+
+## Mesa manual
+
+A mesa inclui Baralho, Mão, Ativo, Banco, Prêmios, Descarte, Zona Perdida e um Estádio compartilhado. As cartas são cópias individuais identificadas por UUID; não são contadores agregados. Movimentações são atômicas e preservam todas as cópias. Espaços padrão: um Ativo, cinco de Banco e seis Prêmios. É possível ajustar manualmente o Banco para oito posições quando necessário; reduzir o limite não descarta cartas automaticamente.
+
+Entre Ativo e Banco, mover um Pokémon mantém a pilha. Para outras zonas, a operação move o conjunto como cartas separadas e limpa dano, condições e uso de Habilidade dessas cartas. Anexos podem ser selecionados individualmente para serem destacados e movidos. Evoluir transfere os anexos e o dano ao novo topo, remove condições e mantém as cartas anteriores empilhadas. A cadeia de evolução e o tipo de Treinador são conferidos pelo jogador.
+
+Energia, Apoiador, VSTAR, GX e ACE SPEC são marcadores manuais. Próximo turno libera Energia, Apoiador e Habilidades de quem começa; ele não compra uma carta. ACE SPEC é um lembrete de uso, não uma proibição de reutilização se um efeito permitir recuperá-la.
+
+Ataques, efeitos, custos, Nocautes, vitória, mulligans e legalidade não são automatizados. Use movimentações, marcadores e anotações para resolver manualmente as situações. Não há adversário de IA ou jogo online.
+
+## Privacidade no mesmo aparelho
+
+No modo de dois lados, a mão adversária fica oculta. A busca no baralho é restrita ao lado controlado. Prêmios começam virados para baixo. Virar uma carta na mesa ou nos Prêmios e revelar uma carta são operações explícitas. A mão só é compartilhada pela revelação explícita. O modo **Revelar ambos para estudo** mostra as identidades dos dois lados, inclusive nas inspeções de zonas.
+
+A troca de controle remove a mesa da árvore de interface e mostra uma tela para passar o aparelho. No retorno do aplicativo em segundo plano, a passagem é exibida novamente na mesa dupla. As anotações são compartilhadas: não escreva nelas informações que deseja manter ocultas.
+
+Esse é um controle visual para treino local, não uma barreira contra alguém com acesso aos arquivos de dados, ao backup ou às ferramentas de desenvolvimento do próprio aparelho.
+
+## Dados e offline
+
+- O identificador iOS `com.prizecheck.tcg` foi mantido. A chave antiga `@prizecheck/state/v1` e seus marcadores permanecem sob o Store original.
+- A nova biblioteca copia o deck antigo na primeira execução e usa `@ptcgmap/workspace/v2`, sem apagar a sessão de torneio.
+- Sessão, listas, catálogo e histórico são gravados por uma fila serial. A interface mostra se salvou ou se houve falha. Dados ilegíveis são preservados; a sessão temporária não os sobrescreve.
+- Em iOS/Android, as imagens ficam em Documents com nomes próprios e referências relativas à pasta do app. No navegador, ficam como Blobs no IndexedDB. A renderização usa apenas esses arquivos locais; não há fallback remoto silencioso.
+- O modo offline bloqueia a preparação de novos downloads e mantém importação de arquivos, treino, listas e imagens já disponíveis.
+- A biblioteca pode exportar os dados em JSON por Configurações. Esse backup não inclui os arquivos de imagem nem implementa uma restauração pela interface; mantenha também suas listas e imagens originais.
+- A instalação nativa empacotada contém o bundle do app. A versão web de desenvolvimento/exportada depende do servidor para carregar o código: não é uma PWA com primeira carga offline.
+
+Para preservar dados ao atualizar no iPhone, mantenha o identificador e a identidade de assinatura usados na instalação anterior e instale como atualização. Desinstalar o app remove seu armazenamento. A assinatura posterior pelo sideloader e a atualização no aparelho ainda precisam ser validadas pelo usuário.
+
+## Estrutura
+
+```text
+App.tsx                    Shell, áreas seguras e navegação adaptativa
+src/battle/                Tipos, ações, invariantes, histórico, desfazer e visibilidade
+src/catalog/               Resolução TCGdex, identificação de impressão e cache de arquivos
+src/workspace/             Biblioteca, sessão, fila de persistência e migração
+src/screens/               Início, Meus Decks, Treinar, Configurações e utilitários antigos
+src/components/            Cartas, ampliação, zonas, ações e host de um único modal nativo
+src/domain/                Parser e lógica original dos Prêmios, preservados
+src/state/                 Store e persistência originais dos utilitários
+qa/                        Roteiros e relatórios de testes no navegador
+```
+
+As definições das cartas e as cópias da sessão são independentes da biblioteca editável. O reducer de batalha recebe ações estruturadas; embaralhamento injeta uma permutação gerada fora do reducer. Cada ação é validada antes de substituir o estado. Não há servidor, login, assinatura de serviço ou envio de decklists para o catálogo.
+
+## Verificar
 
 ```bash
-npm run typecheck
 npm test
+npm run typecheck
 npm run build:web
 ```
 
-`build:web` produz `dist/`. Não há serviço remoto, chave de API, login ou backend para configurar. A instalação inicial de dependências e o carregamento do bundle de desenvolvimento exigem conexão. O aplicativo nativo empacotado mantém os recursos locais; a exportação web não inclui service worker nem promete primeira carga offline.
+Consulte [VALIDATION.md](VALIDATION.md) para os resultados e seus limites, [RESEARCH.md](RESEARCH.md) para a análise do projeto/REA/referência e [BUILD-IOS-UNSIGNED.md](BUILD-IOS-UNSIGNED.md) para compilação e instalação. Os roteiros em `qa/` usam Python Playwright e Chromium em Linux, com o app servido na porta 8081; `browser_check.py` deve ser executado antes de `interaction_check.py`.
 
-## Arquitetura recomendada
+## Imagens e atribuição
 
-React Native com Expo permite uma base para Android e iOS, controles nativos e compilação web para desenvolvimento. TypeScript ajuda a preservar as invariantes de contagem. Para esse MVP, um reducer e Context são suficientes: não há necessidade de backend, Redux, banco remoto ou navegação externa. AsyncStorage mantém uma única sessão por aparelho/origem do navegador. Dados não são criptografados nem sincronizados entre dispositivos.
+Fontes: [TCGdex API](https://api.tcgdex.net/v2/en/sets), [documentação TCGdex](https://tcgdex.dev/), arquivos escolhidos pelo usuário. A arte pertence aos respectivos titulares de Pokémon; o aplicativo não transfere direitos sobre as imagens. Imagens reais do catálogo não são incluídas no repositório: são baixadas no aparelho por uma ação explícita.
 
-```text
-App.tsx                         Shell responsivo e navegação das três telas
-src/
-  domain/
-    types.ts                    Contratos do deck e da partida
-    parser.ts                   Importação TCG Live / Limitless
-    prizes.ts                   Intervalos e invariantes dos seis Prêmios
-    match.ts                    Reducer: ações e transições de estado
-    demo.ts                     Deck de demonstração
-  state/
-    Store.tsx                   Context, hidratação e persistência
-    storage.ts                  Serialização, validação e fila de gravações
-  screens/
-    TrackerScreen.tsx           Conferência inicial e retirada de Prêmios
-    BoardScreen.tsx             Pokémon, dano, condições, Habilidades e moeda
-    DeckScreen.tsx              Importação, validação e revisão da lista
-  components/UI.tsx             Botões, contador, badges e diálogos
-  theme.ts                     Cores e estilos compartilhados
-tests/domain.test.ts            Testes da lógica competitiva
-```
-
-A lógica de domínio não importa React Native. Ela pode ser reutilizada em outra interface, executada em testes e evoluir sem acoplar regras à apresentação. O layout usa navegação inferior em celular e lateral em telas a partir de 1000 px; a área de conteúdo fica limitada a 850 px. Controles principais têm alvos de toque de pelo menos 44 px, labels de acessibilidade e estados expressos por texto. A moeda respeita a preferência de redução de movimento.
-
-## Importação
-
-Aceita categorias em inglês ou português, cabeçalhos com dois-pontos ou parênteses, acentos, CRLF, quantidades com `x`, bullets `*`, código de coleção e número. Não consulta uma API de cartas.
-
-```text
-Pokémon: 18
-4 Dreepy TWM 128
-...
-Trainer: 34
-4 Arven OBF 186
-...
-Energy: 8
-4 Fire Energy SVE 2
-...
-Total Cards: 60
-```
-
-As reticências acima explicam o formato: não devem ser incluídas numa lista real. Use “Preencher com exemplo” para uma lista completa.
-
-- Linhas da mesma identidade (categoria + nome + coleção + número) são agregadas.
-- Impressões diferentes permanecem separadas para que o usuário possa contar cópias corretamente.
-- Linhas não reconhecidas mostram o número da linha; não são descartadas silenciosamente.
-- Cartas sem cabeçalho precisam de categoria; somente nomes contendo Energy/Energia permitem identificar energia sem cabeçalho.
-- O importador exige 60 cartas e ao menos uma entrada de Pokémon. Isso não equivale a validar um deck competitivo: não verifica rotação, Pokémon Básicos, limite de cópias por nome nem legalidade do formato.
-- A importação substitui o deck e inicia uma nova partida, após revisão em um diálogo.
-
-## Modelo correto dos Prêmios
-
-“Ainda não vi esta carta” não significa “esta carta está nos Prêmios”. O aplicativo mantém um **retrato de uma única conferência inicial**, antes de retirar Prêmios, com exatamente seis cartas nos Prêmios.
-
-Para cada tipo de carta:
-
-```text
-quantidade = total de cópias na lista
-fora = cópias distintas contabilizadas fora dos Prêmios
-faltantes = quantidade − fora
-confirmados = cópias diretamente identificadas nos Prêmios por um efeito permitido
-
-mínimo = max(confirmados, 6 − soma dos faltantes dos outros tipos)
-máximo = min(faltantes, 6 − soma dos confirmados dos outros tipos)
-```
-
-Enquanto `mínimo != máximo`, a interface mostra um intervalo possível. Não apresenta porcentagens nem uma distribuição probabilística inventada. Mesmo antes do fim da conferência, restrições podem tornar uma quantidade específica certa.
-
-Ao contabilizar **54 cópias distintas fora dos Prêmios**, todos os faltantes são os seis Prêmios. Alternativamente, seis identificações diretas permitem fechar o mapa. A finalização congela esse retrato e libera contadores para retirar cada tipo de carta, limitados ao número confirmado. Não conhece as posições físicas das cartas.
-
-Inclua todas as zonas fora dos Prêmios: deck, mão, campo, descarte, Zona Perdida e outras relevantes. Uma carta já contabilizada não pode ser somada de novo porque voltou a aparecer. Confirmações diretas não podem se sobrepor às cópias fora dos Prêmios. O reducer bloqueia ações incompatíveis, contagens negativas e mais de seis confirmações. Se você já retirou Prêmios antes de fazer a conferência, inicie uma nova sessão de treino: esse fluxo não reconstrói retroativamente a composição inicial.
-
-## Ferramentas de mesa
-
-- Um espaço ativo e cinco de Banco, todos renomeáveis.
-- Dano `+10`, `+50`, `+100`, controles de remoção e valor personalizado múltiplo de dez.
-- Veneno e Queimadura coexistem; Sono, Paralisia e Confusão se substituem.
-- Uma marca de Habilidade por espaço, liberada por “Próximo turno”.
-- VSTAR, GX e ACE SPEC como lembretes manuais que persistem entre turnos.
-- ACE SPEC é uma restrição de construção do deck, não um poder necessariamente consumido para sempre. O marcador pode ser desfeito quando uma carta é recuperada.
-- Moeda com um byte de aleatoriedade de `expo-crypto`: paridade define cada face sem viés de módulo; a animação não determina o resultado.
-- “Limpar” prepara um espaço para outro Pokémon; “Nova partida” reinicia toda a sessão e mantém o deck.
-
-## Persistência e limites
-
-O Store aguarda a hidratação antes de gravar, valida a versão e as invariantes e serializa as gravações para evitar que uma operação antiga sobrescreva a mais recente. Falhas são mostradas na interface. Se um registro anterior não puder ser recuperado, ele é preservado; a sessão exibida funciona temporariamente em memória para não apagar os dados originais. Não há mecanismo de backup nesta versão.
-
-O app é uma base funcional de treino, não um motor completo de regras. Não automatiza dano de Checkup, Nocaute, recuo, evolução, troca de ativo, poderes de múltiplas Habilidades por carta nem efeitos que substituem ou mudam os Prêmios. Também não mantém biblioteca de vários decks, histórico, fotos de cartas ou sincronização. Para trocar o Pokémon de espaço, atualize seus marcadores manualmente.
-
-Em eventos presenciais, consulte a organização sobre dispositivos eletrônicos e ferramentas de auxílio durante a partida. A ferramenta não garante autorização para uso em torneios oficiais. Projeto independente, sem vínculo com a The Pokémon Company.
-
-## Evolução sugerida
-
-Para escalar, mantenha o domínio puro e acrescente uma biblioteca de decks com IDs próprios, backup/exportação de sessões e um modo de substituição de Prêmios por eventos explícitos. Migre AsyncStorage para SQLite somente se houver histórico ou consultas que justifiquem isso. Para distribuição mobile, configure uma development build e perfis EAS Build; atualize identificadores `com.prizecheck.tcg` para os da sua organização e valide em aparelhos reais antes de publicar nas lojas.
+Projeto independente, sem vínculo com a The Pokémon Company. Em torneios, consulte a organização sobre o uso de dispositivos e ferramentas de auxílio.
