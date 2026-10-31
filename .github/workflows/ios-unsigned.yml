@@ -2,15 +2,6 @@ name: Build iOS unsigned IPA
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - '.github/workflows/ios-unsigned.yml'
-      - 'scripts/build-ios-unsigned.sh'
-      - 'App.tsx'
-      - 'src/**'
-      - 'app.json'
-      - 'package.json'
-      - 'package-lock.json'
 
 permissions:
   contents: read

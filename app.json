@@ -2,14 +2,14 @@
   "expo": {
     "name": "PTCGMAP",
     "slug": "prizecheck-tcg",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "orientation": "default",
     "userInterfaceStyle": "dark",
     "scheme": "prizecheck",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.prizecheck.tcg",
-      "buildNumber": "2"
+      "buildNumber": "3"
     },
     "android": {
       "package": "com.prizecheck.tcg"

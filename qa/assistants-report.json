@@ -1,0 +1,19 @@
+{
+  "checks": [
+    "Seleciona listas independentes para jogador e adversário",
+    "Cria mesa real com a lista adversária selecionada e robô ativo",
+    "Iniciar partida compra exatamente a carta inicial do turno",
+    "Treinador apresenta análise real na interface",
+    "Aplica a sequência sugerida ao estado persistido",
+    "Adversário executa seu turno e devolve controle ao jogador",
+    "Histórico registra ações reais de jogo",
+    "Desfazer não dispara o robô novamente",
+    "Reabrir o site retoma estado do robô e da partida",
+    "Mesa e assistentes sem overflow em 390×844",
+    "Mesa e assistentes sem overflow em 320×568",
+    "Mesa e assistentes sem overflow em 1366×1024",
+    "Mesa e assistentes sem overflow em 810×1080",
+    "Sem exceções JavaScript no fluxo de treino"
+  ],
+  "errors": []
+}

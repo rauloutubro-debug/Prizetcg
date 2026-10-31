@@ -5,7 +5,7 @@ O workflow `.github/workflows/ios-unsigned.yml` usa um runner `macos-15` do GitH
 ## Na nuvem
 
 1. Abra **Actions → Build iOS unsigned IPA** no repositório.
-2. Execute **Run workflow** na branch desejada. Um push de código também dispara o workflow.
+2. Execute **Run workflow** na branch desejada. A compilação iOS agora é manual; pushes executam apenas as verificações rápidas da versão web.
 3. Aguarde testes, TypeScript, Expo prebuild, instalação dos Pods e `xcodebuild archive` em Release.
 4. Baixe o artefato **PTCGMAP-unsigned** e extraia `PTCGMAP-unsigned.ipa` e o checksum SHA-256.
 5. Use seu sideloader para assinar e instalar o IPA no iPhone/iPad.
@@ -31,7 +31,9 @@ Para um cliente local de desenvolvimento no simulador, use `npm run ios:native` 
 
 A compilação não substitui o teste em hardware. Verifique a atualização sobre a instalação anterior, a importação de imagens pelo Files, a retomada depois de encerrar o app e o treino em modo avião. Os resultados já executados estão em VALIDATION.md.
 
-## Build verificado desta versão
+## Build anterior verificado (2.0)
+
+A atualização 2.1 ainda não gerou um novo IPA. Execute o workflow manual para incluir os assistentes no aplicativo iOS. O binário abaixo é da versão anterior.
 
 [PTCGMAP 2.0, build 2 — execução concluída](https://github.com/rauloutubro-debug/Prizetcg/actions/runs/41153961418). O IPA é para iPhone/iPad arm64 com iOS 15.1 ou superior, sem assinatura. A assinatura deve ser feita pelo seu sideloader. A instalação no aparelho ainda não foi testada nesta entrega.
 

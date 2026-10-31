@@ -1,4 +1,4 @@
-# PTCGMAP 2.0
+# PTCGMAP 2.1
 
 Aplicativo React Native + Expo + TypeScript para treino local de Pokémon TCG. Oferece biblioteca de decks, imagens reais preparadas para uso offline, mesa manual solo ou para dois lados e as ferramentas de torneio do PrizeCheck original.
 
@@ -24,7 +24,7 @@ Para compilar o cliente localmente: `npm run ios:native` exige macOS/Xcode/Cocoa
 1. Em **Meus Decks**, importe uma lista TCG Live ou Limitless com cabeçalhos Pokémon, Trainer/Treinador e Energy/Energia. O exemplo completo pode ser preenchido pelo botão correspondente. A lista deve ter 60 cartas; o app não verifica rotação, legalidade ou limite de cópias por nome.
 2. Toque em **Preparar offline**. A operação consulta a API pública TCGdex, identifica a impressão por coleção e número e baixa as imagens disponíveis. É possível interromper após a carta atual e continuar depois.
 3. Em **Ver cartas → Ampliar**, importe um arquivo de imagem para uma carta ausente. O ID TCGdex opcional permite uma associação manual. Confira a edição nesse caso. O catálogo está em inglês; as imagens podem ser substituídas por arquivos que você pode utilizar.
-4. Em **Treinar**, escolha treino solo ou dois lados, selecione os decks e prepare a mesa. A preparação embaralha, compra 7 e separa 6 Prêmios. Você escolhe o Ativo e o Banco; não há seleção automática de Básicos ou mulligan.
+4. Em **Treinar**, escolha treino solo, dois lados ou **Contra robô**. Selecione seu deck e, nos modos com oponente, uma lista adversária independente. A preparação compra 7 e separa 6 Prêmios. Você escolhe seu Ativo e Banco; o robô escolhe seu próprio Ativo. Mulligans continuam manuais. Consulte [ASSISTANTS.md](ASSISTANTS.md).
 5. Toque em uma carta para mover, virar, revelar, ampliar, anexar Energia/Ferramenta, empilhar evolução ou alterar marcadores. Cartas fora da mão podem ser localizadas pelos botões de zona. **Buscar no baralho** é uma busca manual com acesso à ordem atual; embaralhe explicitamente depois de resolvê-la.
 6. **Desfazer** restaura o estado anterior, incluindo ordem de baralho, pilhas e marcadores. O histórico mantém as últimas 60 ações. Há anotações manuais de efeitos e moeda registrada no histórico.
 7. **Repetir mão inicial** prepara outra sessão com as cópias dos mesmos decks. Editar ou excluir uma lista da biblioteca não altera a partida em andamento.
@@ -37,7 +37,7 @@ Entre Ativo e Banco, mover um Pokémon mantém a pilha. Para outras zonas, a ope
 
 Energia, Apoiador, VSTAR, GX e ACE SPEC são marcadores manuais. Próximo turno libera Energia, Apoiador e Habilidades de quem começa; ele não compra uma carta. ACE SPEC é um lembrete de uso, não uma proibição de reutilização se um efeito permitir recuperá-la.
 
-Ataques, efeitos, custos, Nocautes, vitória, mulligans e legalidade não são automatizados. Use movimentações, marcadores e anotações para resolver manualmente as situações. Não há adversário de IA ou jogo online.
+O modo **Contra robô** automatiza um conjunto inicial de cartas e o **Treinador de jogadas** compara sequências locais de até três ações. Consulte [ASSISTANTS.md](ASSISTANTS.md) para cobertura, restrições e uso. A mesa manual continua disponível. Não há validação completa de regras nem jogo online.
 
 ## Privacidade no mesmo aparelho
 
@@ -63,6 +63,7 @@ Para preservar dados ao atualizar no iPhone, mantenha o identificador e a identi
 
 ```text
 App.tsx                    Shell, áreas seguras e navegação adaptativa
+src/assistants/            Perfis, efeitos suportados, análise limitada e robô local
 src/battle/                Tipos, ações, invariantes, histórico, desfazer e visibilidade
 src/catalog/               Resolução TCGdex, identificação de impressão e cache de arquivos
 src/workspace/             Biblioteca, sessão, fila de persistência e migração

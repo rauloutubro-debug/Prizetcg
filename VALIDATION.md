@@ -1,3 +1,17 @@
+# Verificação do PTCGMAP 2.1
+
+Atualização em 31/10/2026, antes de publicar no GitHub e no Site:
+
+- `npm run typecheck`: passou.
+- `npm test`: **34 testes passaram** (27 anteriores + 7 dos assistentes).
+- `expo export --platform web`: passou; bundle estático React Native Web gerado.
+- `qa/assistants_check.py`: **14 verificações passaram** no Chromium real com rede externa bloqueada. Seleção independente de listas, partida assistida, análise, aplicação da sequência, execução do turno adversário, histórico, desfazer sem novo turno automático e retomada após recarregar. Viewports 320×568, 390×844, 810×1080 e 1366×1024 sem overflow horizontal. Sem exceções JavaScript. Relatório em `qa/assistants-report.json`.
+- Novos testes de domínio verificam custos tipados, uma ligação/turno, evolução, dano, Phantom Dive, Nocautes, Prêmios, vitória simplificada, conservação de 120 cópias, recuo, promoção preservando dano/anexos, orçamento do analisador, independência de informações ocultas, recusa de plano obsoleto, Checkup/mulligan manual e reversão por histórico.
+
+A cobertura do robô é limitada aos perfis de `ASSISTANTS.md`. Não foi provada uma jogada globalmente ótima nem validado um motor completo de regras. Não houve nova compilação IPA 2.1 nem teste nativo em hardware nesta atualização. Os testes abaixo pertencem à entrega anterior e foram preservados como registro histórico.
+
+---
+
 # Verificação do PTCGMAP 2.0
 
 Data: 31/10/2026. Código analisado e atualizado em Linux, Node.js 24.19.0, Expo SDK 54. A compilação iOS em nuvem usa o workflow macOS do repositório. A interface usa um único modal nativo com uma pilha lógica de painéis, evitando múltiplas apresentações simultâneas em UIKit.
