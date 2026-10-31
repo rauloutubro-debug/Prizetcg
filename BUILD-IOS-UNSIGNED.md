@@ -30,3 +30,15 @@ Para um cliente local de desenvolvimento no simulador, use `npm run ios:native` 
 ## Verificação do aparelho
 
 A compilação não substitui o teste em hardware. Verifique a atualização sobre a instalação anterior, a importação de imagens pelo Files, a retomada depois de encerrar o app e o treino em modo avião. Os resultados já executados estão em VALIDATION.md.
+
+## Build verificado desta versão
+
+[PTCGMAP 2.0, build 2 — execução concluída](https://github.com/rauloutubro-debug/Prizetcg/actions/runs/41153961418). O IPA é para iPhone/iPad arm64 com iOS 15.1 ou superior, sem assinatura. A assinatura deve ser feita pelo seu sideloader. A instalação no aparelho ainda não foi testada nesta entrega.
+
+É possível conferir a estrutura e o checksum em Linux, Windows com Python ou macOS:
+
+```bash
+python3 scripts/verify-ipa.py PTCGMAP-unsigned.ipa 15f324e3da8aa156acdb1bcaabd786fa3c5b979bde013cdfb535900259d039c7
+```
+
+O hash acima corresponde à execução citada; um novo build pode produzir outro hash.

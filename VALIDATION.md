@@ -24,10 +24,22 @@ Verificados viewports de **390×844**, **1024×768** e **1366×1024**, sem overf
 
 ## Compilação
 
-A exportação de bundles Android, iOS/Hermes e web foi executada com sucesso. Isso não equivale a instalação em hardware. O resultado do build Xcode/IPA desta versão será registrado abaixo quando a execução remota terminar.
+A exportação de bundles Android, iOS/Hermes e web foi executada com sucesso. Isso não equivale a instalação em hardware. O build Xcode remoto concluiu com sucesso; resultado e verificação abaixo.
 
 ## Limites da verificação
 
 Não houve teste em iPhone/iPad físico, leitor de tela VoiceOver, assinatura por sideloader, teste de atualização sobre uma instalação real nem execução em modo avião em hardware. O cache nativo Documents e o picker nativo fazem parte do código, mas seus testes de execução aqui foram feitos pelo adaptador web; a compilação nativa é verificada separadamente.
 
 A mesa não valida todas as regras, não automatiza ataques/efeitos/vitória e não possui adversário automático. Os dados de JSON exportados não incluem os arquivos de imagem, e não há restauração de backup pela interface nesta versão. Os artefatos antigos de PrizeCheck 1.0 continuam no histórico e não são o binário desta atualização.
+
+## Resultado Xcode e IPA 2.0
+
+- [Execução 41153961418](https://github.com/rauloutubro-debug/Prizetcg/actions/runs/41153961418): **success**; commit compilado `41f2b6006c2366e015c4ad367257f9c251a99436`.
+- Testes e TypeScript passaram também no runner macOS.
+- Arquivo compilado: `PTCGMAP-unsigned.ipa`, 6.719.160 bytes, versão 2.0.0 (build 2), bundle ID `com.prizecheck.tcg`.
+- Destino: aparelho iOS arm64, iOS mínimo 15.1, famílias iPhone e iPad.
+- O arquivo baixado foi conferido pelo digest do artefato GitHub, SHA-256 do IPA e CRC do ZIP.
+- Executável Mach-O sem assinatura embutida; ausência de `_CodeSignature` e de `embedded.mobileprovision`; bundle embutido com 4.538.716 bytes.
+- SHA-256 do IPA: `15f324e3da8aa156acdb1bcaabd786fa3c5b979bde013cdfb535900259d039c7`.
+
+O verificador reproduzível está em `scripts/verify-ipa.py`. Os testes físicos e de assinatura/instalação pelo sideloader continuam pendentes, conforme os limites acima.
